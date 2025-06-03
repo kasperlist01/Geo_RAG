@@ -222,7 +222,7 @@ async def process_query(message: Message, state: FSMContext):
 
     except ValueError as e:
         await message.answer(
-            f"❌ В базе нет загруженных документов. Пожалуйста, сначала загрузите документ.{e}",
+            "❌ В базе нет загруженных документов. Пожалуйста, сначала загрузите документ.",
             reply_markup=get_main_keyboard()
         )
         await state.set_state(UserStates.IDLE)

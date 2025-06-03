@@ -107,18 +107,25 @@ class VectorStorage:
 
         # Удаляем файл с документами
         if os.path.exists(self.documents_path):
-            os.remove(self.documents_path)
+            try:
+                os.remove(self.documents_path)
+            except Exception as e:
+                print(f"Ошибка при удалении файла документов: {e}")
 
+        # Используем встроенный метод для очистки коллекции
         if self.db:
-            self.db = None
-
-        if os.path.exists(self.persist_directory):
-            for item in os.listdir(self.persist_directory):
-                item_path = os.path.join(self.persist_directory, item)
-                if os.path.isfile(item_path):
-                    os.remove(item_path)
-                elif os.path.isdir(item_path):
-                    for subitem in os.listdir(item_path):
-                        subitem_path = os.path.join(item_path, subitem)
-                        if os.path.isfile(subitem_path):
-                            os.remove(subitem_path)
+            try:
+                # Получаем имя коллекции
+                collection_name = self.db._collection.name
+                # Удаляем коллекцию
+                self.db._client.delete_collection(collection_name)
+                # Создаем новую пустую коллекцию
+                self.db = Chroma(
+                    persist_directory=self.persist_directory,
+                    embedding_function=self.embeddings,
+                    collection_name=collection_name
+                )
+            except Exception as e:
+                print(f"Ошибка при очистке базы данных: {e}")
+                # Сбрасываем экземпляр базы данных
+                self.db = None
