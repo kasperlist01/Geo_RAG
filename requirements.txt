@@ -1,0 +1,11 @@
+aiogram
+langchain
+langchain-community
+chromadb
+requests
+python-dotenv
+pymupdf
+ebooklib
+beautifulsoup4
+lxml
+rank_bm25
